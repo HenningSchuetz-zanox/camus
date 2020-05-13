@@ -109,7 +109,9 @@ public class EtlMultiOutputFormat extends FileOutputFormat<EtlKey, Object> {
 
     public static DestinationFileAggregator getDestinationFileAggregator(JobContext job) {
       try {
-          return getDestinationFileAggregatorClass(job).newInstance();
+          DestinationFileAggregator destinationFileAggregator = (DestinationFileAggregator)getDestinationFileAggregatorClass(job).newInstance();
+          destinationFileAggregator.setJobContext(job);
+          return destinationFileAggregator;
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
