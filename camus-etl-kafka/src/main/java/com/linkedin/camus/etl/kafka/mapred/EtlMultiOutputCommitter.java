@@ -153,7 +153,7 @@ public class EtlMultiOutputCommitter extends FileOutputCommitter {
 
   protected void commitFile(JobContext job, Path source, Path target) throws IOException {
     log.info(String.format("Moving %s to %s", source, target));
-    if (!FileSystem.get(job.getConfiguration()).rename(source, target)) {
+    if (!new HdfsRenameService(job.getConfiguration()).rename(source, target)) {
       log.error(String.format("Failed to move from %s to %s", source, target));
       throw new IOException(String.format("Failed to move from %s to %s", source, target));
     } else {
