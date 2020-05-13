@@ -19,9 +19,10 @@ public class HdfsRenameService {
         try {
             fs = FileSystem.get(conf);
             if (!fs.exists(target)) {
-                return fs.rename(source, target);
+                fs.rename(source, target);
             } else if (shouldOverride(fs, source, target)) {
-                return fs.delete(target, false) && fs.rename(source, target);
+                fs.delete(target, false);
+                fs.rename(source, target);
             }
             return true;
         } finally {
@@ -32,10 +33,10 @@ public class HdfsRenameService {
     }
 
     private boolean shouldOverride(FileSystem fs, Path source, Path target) throws IOException {
-        return isSourceLargerOrEqualThanTarget(fs, source, target);
+        return isSourceLargerThanTarget(fs, source, target);
     }
     
-    private boolean isSourceLargerOrEqualThanTarget(FileSystem fs, Path source, Path target) throws IOException {
-        return fs.getFileStatus(source).getLen() >= fs.getFileStatus(target).getLen();
+    private boolean isSourceLargerThanTarget(FileSystem fs, Path source, Path target) throws IOException {
+        return fs.getFileStatus(source).getLen() > fs.getFileStatus(target).getLen();
     }
 }
